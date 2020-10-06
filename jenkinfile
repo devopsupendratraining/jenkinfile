@@ -1,6 +1,9 @@
 node{
     
     def mavenHome=tool name:'maven 3.6.3'
+    
+    properties([pipelineTriggers([pollSCM('* * * * *')])])
+    
     stage('CheckoutCode'){
         git credentialsId: 'c1890328-7123-4d85-93ae-76eaf1c83409', url: 'https://github.com/devopsupendratraining/mithuntechno.git'
     }
