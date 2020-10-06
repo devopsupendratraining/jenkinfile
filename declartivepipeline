@@ -1,0 +1,65 @@
+pipeline{
+
+
+
+agent any
+
+
+	tools{
+		maven 'maven 3.6.3'
+	}
+//stages
+	stages {
+			stage('checkout'){
+			    steps{
+					git credentialsId: 'c1890328-7123-4d85-93ae-76eaf1c83409', url: 'https://github.com/devopsupendratraining/mithuntechno.git'
+				
+				}
+			
+			}
+			
+			stage('Build'){
+				steps{
+					sh "mvn clean package"
+				
+				}
+			
+			
+			}
+			
+			stage('SonarQubeReport'){
+				steps{
+					sh "mvn sonar:sonar"
+				
+				}
+			
+			
+			}
+			
+			stage('UploadNexusArtifacts'){
+				steps{
+					sh "mvn clean deploy"
+				
+				}
+			
+			
+			}
+			
+			
+			stage('Deploy'){
+							steps{
+								sshagent(['7c75c326-a038-4ad6-a72e-2d8573ac2471']) 
+							   {
+								
+								 sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@18.188.79.18:/opt/apache-tomcat-9.0.38/webapps/"
+								}
+							
+							}
+								
+			}
+			
+			
+
+	}
+
+}
